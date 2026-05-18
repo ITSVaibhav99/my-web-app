@@ -17,6 +17,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing dependencies...'
+                bat 'npm config set fetch-retry-mintimeout 20000'
+                bat 'npm config set fetch-retry-maxtimeout 120000'
                 bat 'npm install'
             }
         }
@@ -38,8 +40,8 @@ pipeline {
         stage('Deploy Container') {
             steps {
                 echo 'Deploying app...'
-                bat 'docker stop my-web-app || true'
-                bat 'docker rm my-web-app || true'
+                bat 'docker stop my-web-app || exit 0'
+                bat 'docker rm my-web-app || exit 0'
                 bat 'docker run -d -p 3000:3000 --name my-web-app my-web-app:latest'
             }
         }
